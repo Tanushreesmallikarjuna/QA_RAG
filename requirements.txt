@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+streamlit
+faiss-cpu
+openai
+pypdf
+python-dotenv
+numpy
