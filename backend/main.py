@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# ✅ ADD THIS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # allow all (good for testing)
