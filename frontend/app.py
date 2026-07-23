@@ -91,7 +91,7 @@ if uploaded_file and st.button("Upload & Index PDF"):
 st.caption("Upload multiple PDFs one at a time. They will all be searchable together.")
 
 st.subheader("Step 2: Ask a Question")
-question = st.text_input("Ask a question about your PDFs")
+question = st.text_input("Ask a question about your PDFs",height=100)
 
 if st.button("Ask"):
     if not question.strip():
