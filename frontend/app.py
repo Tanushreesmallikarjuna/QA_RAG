@@ -22,7 +22,7 @@ else:
 
 st.markdown(f"""
 <style>
-.stApp {{ background-color: {bg_color}; color: {text_color}; width:90%;}}
+.stApp {{ background-color: {bg_color}; color: {text_color}; width:90%}}
 .block-container {{ padding-top: 2rem; padding-bottom: 2rem; }}
 .stButton>button {{
     width: 100%;
@@ -91,7 +91,7 @@ if uploaded_file and st.button("Upload & Index PDF"):
 st.caption("Upload multiple PDFs one at a time. They will all be searchable together.")
 
 st.subheader("Step 2: Ask a Question")
-question = st.text_input("Ask a question about your PDFs",height=100)
+question = st.text_input("Ask a question about your PDFs")
 
 if st.button("Ask"):
     if not question.strip():
