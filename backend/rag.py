@@ -1,14 +1,14 @@
 import os
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-embed_model = SentenceTransformer("all-MiniLM-L6-v2")
+embed_model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
 
 VECTOR_PATH = "vectorstore"
 
@@ -16,19 +16,21 @@ VECTOR_PATH = "vectorstore"
 def load_index():
     index_path = os.path.join(VECTOR_PATH, "faiss.index")
     chunks_path = os.path.join(VECTOR_PATH, "chunks.npy")
-    sources_path = os.path.join(VECTOR_PATH, "sources.npy")  # NEW
+    sources_path = os.path.join(VECTOR_PATH, "sources.npy")
 
     if not os.path.exists(index_path) or not os.path.exists(chunks_path):
         raise FileNotFoundError("No index found. Please upload a PDF first.")
 
     index = faiss.read_index(index_path)
     chunks = np.load(chunks_path, allow_pickle=True)
-    sources = np.load(sources_path, allow_pickle=True)  # NEW
+    sources = np.load(sources_path, allow_pickle=True)
     return index, chunks, sources
 
 
 def embed_query(query):
-    return embed_model.encode([query], convert_to_numpy=True).astype("float32")
+    embedding = list(embed_model.embed([query]))[0]
+    vector = np.array(embedding, dtype="float32").reshape(1, -1)
+    return vector
 
 
 def retrieve(query, k=5):
@@ -46,7 +48,6 @@ def retrieve(query, k=5):
 
 
 def ask_llm(question, context, history=None):
-
     history_text = ""
 
     if history:
@@ -83,8 +84,8 @@ Answer:
 
     return response.choices[0].message.content
 
-def ask_question(question, history=None):
 
+def ask_question(question, history=None):
     docs, doc_sources = retrieve(question)
 
     if not docs:
@@ -93,20 +94,12 @@ def ask_question(question, history=None):
             "sources": []
         }
 
-    context = "\n\n".join(
-        chunk["text"] for chunk in docs
-    )
+    context = "\n\n".join(chunk["text"] for chunk in docs)
 
-    answer = ask_llm(
-        question,
-        context,
-        history
-    )
+    answer = ask_llm(question, context, history)
 
     sources = []
-
     for chunk, file in zip(docs, doc_sources):
-
         sources.append(
             {
                 "file": file,
@@ -119,7 +112,3 @@ def ask_question(question, history=None):
         "answer": answer,
         "sources": sources
     }
-
-
-
-

@@ -30,6 +30,9 @@ class Question(BaseModel):
     history: list = []
 
 
+# ----------------------------
+# Upload PDF
+# ----------------------------
 @app.post("/upload")
 def upload_pdf(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
@@ -47,6 +50,9 @@ def upload_pdf(file: UploadFile = File(...)):
     return {"message": f"{filename} processed successfully", "chunks_created": chunk_count}
 
 
+# ----------------------------
+# Status - list indexed PDFs
+# ----------------------------
 @app.get("/status")
 def get_status():
     sources_path = os.path.join(VECTOR_PATH, "sources.npy")
@@ -66,6 +72,9 @@ def get_status():
     }
 
 
+# ----------------------------
+# Delete a single PDF
+# ----------------------------
 @app.delete("/delete/{filename}")
 def delete_file(filename: str):
     try:
@@ -75,6 +84,9 @@ def delete_file(filename: str):
     return {"message": f"{filename} deleted successfully"}
 
 
+# ----------------------------
+# Clear all PDFs
+# ----------------------------
 @app.delete("/clear")
 def clear_pdfs():
     try:
@@ -84,6 +96,9 @@ def clear_pdfs():
     return {"message": "All PDFs cleared successfully"}
 
 
+# ----------------------------
+# Ask Question
+# ----------------------------
 @app.post("/ask")
 def ask(q: Question):
     try:
