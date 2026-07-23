@@ -2,8 +2,8 @@
 import streamlit as st
 import requests
 
-BACKEND_URL = "http://localhost:8000"
 
+BACKEND_URL = "https://studymate-ai-backend-a9ms.onrender.com"
 st.set_page_config(page_title="StudyMate AI", page_icon="📚", layout="centered")
 
 st.title("📚 StudyMate AI")
